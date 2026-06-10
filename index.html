@@ -135,6 +135,37 @@
   .foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;align-items:center}
   footer a{color:var(--gold-2)}
 
+  /* booking drawer */
+  .bk-overlay{position:fixed;inset:0;background:rgba(5,4,3,.72);backdrop-filter:blur(3px);z-index:300;opacity:0;transition:opacity .35s var(--ease)}
+  .bk-overlay.show{opacity:1}
+  .bk-drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--black-2);border-left:1px solid var(--hair);z-index:301;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .42s var(--ease);overflow-y:auto}
+  .bk-drawer.show{transform:none}
+  .bk-head{display:flex;justify-content:space-between;align-items:center;padding:24px 26px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--black-2);z-index:2}
+  .bk-x{background:none;border:1px solid var(--hair);color:var(--cream);width:38px;height:38px;border-radius:50%;font-size:1rem;cursor:pointer;transition:border-color .3s}
+  .bk-x:hover{border-color:var(--gold-2);color:var(--gold-1)}
+  .bk-body{padding:24px 26px 40px}
+  .bk-sub{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin:6px 0 16px}
+  .bk-list{display:grid;gap:0}
+  .bk-svc{display:flex;justify-content:space-between;align-items:center;gap:14px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);color:var(--cream);padding:18px 4px;cursor:pointer;transition:padding .3s var(--ease),background .3s}
+  .bk-svc:hover{padding-left:12px;background:linear-gradient(90deg,rgba(201,162,74,.06),transparent)}
+  .bk-svc b{font-family:var(--ff-d);font-size:1.3rem;font-weight:600;display:block}
+  .bk-svc small{color:var(--muted);font-size:.78rem}
+  .bk-svc .bk-pr{font-family:var(--ff-d);font-size:1.3rem;color:var(--gold-1);white-space:nowrap}
+  .bk-svc .bk-pr::after{content:" ›";color:var(--gold-3)}
+  .bk-back{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:0 0 14px;font-weight:600}
+  .bk-back:hover{color:var(--gold-1)}
+  .bk-summary{border:1px solid var(--hair);border-radius:8px;padding:20px;margin-bottom:24px}
+  .bk-summary b{font-family:var(--ff-d);font-size:1.6rem;display:block}
+  .bk-summary span{color:var(--muted);font-size:.9rem}
+  .bk-summary .bk-sp{color:var(--gold-1);font-family:var(--ff-d);font-size:1.4rem}
+  .bk-avail{border:1px dashed var(--hair);border-radius:8px;padding:20px;margin-bottom:22px;text-align:center}
+  .bk-avail .lbl{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-2);font-weight:700}
+  .bk-avail .slots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .bk-avail .slot{border:1px solid var(--line);border-radius:6px;padding:9px 14px;font-size:.85rem;color:var(--muted)}
+  .bk-avail .note{color:var(--muted);font-size:.8rem;margin-top:14px;line-height:1.5}
+  .bk-confirm{width:100%;justify-content:center}
+  @media(max-width:520px){.bk-drawer{width:100%;top:auto;height:88svh;border-left:none;border-top:1px solid var(--hair);border-radius:18px 18px 0 0;transform:translateY(100%)}.bk-drawer.show{transform:none}}
+
   .rv{opacity:1}
   .js .rv{opacity:0;transform:translateY(24px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
   .js .rv.in{opacity:1;transform:none}
@@ -266,6 +297,40 @@
 </section>
 </main>
 
+<!-- BOOKING DRAWER (on-site flow → Booksy handoff; her live Booksy widget mounts in #bkAvail on launch) -->
+<div class="bk-overlay" id="bkOverlay" hidden></div>
+<aside class="bk-drawer" id="bkDrawer" role="dialog" aria-modal="true" aria-labelledby="bkTitle" hidden>
+  <div class="bk-head">
+    <span class="script" id="bkTitle" style="font-size:1.7rem">Book with Anna</span>
+    <button class="bk-x" id="bkClose" aria-label="Close booking">✕</button>
+  </div>
+  <div class="bk-body">
+    <div id="bkStep1">
+      <p class="bk-sub">Choose your service</p>
+      <div class="bk-list" id="bkList">
+        <button class="bk-svc" data-svc="Brow Threading" data-price="$20" data-dur="10 min"><span><b>Brow Threading</b><small>10 min</small></span><span class="bk-pr">$20</span></button>
+        <button class="bk-svc" data-svc="Brow &amp; Lip Threading" data-price="$30" data-dur="10 min"><span><b>Brow &amp; Lip Threading</b><small>10 min</small></span><span class="bk-pr">$30</span></button>
+        <button class="bk-svc" data-svc="Full Face Threading" data-price="$55+" data-dur="20 min"><span><b>Full Face Threading</b><small>20 min</small></span><span class="bk-pr">$55+</span></button>
+        <button class="bk-svc" data-svc="Brow Lamination &amp; Lash Lift" data-price="$240" data-dur="1h 25"><span><b>Brow Lamination &amp; Lash Lift</b><small>1h 25</small></span><span class="bk-pr">$240</span></button>
+        <button class="bk-svc" data-svc="Microblading · 1st Session" data-price="$500" data-dur="2h 10"><span><b>Microblading · 1st Session</b><small>2h 10</small></span><span class="bk-pr">$500</span></button>
+        <button class="bk-svc" data-svc="Microblading Touch-up" data-price="$150" data-dur="1h 30"><span><b>Microblading Touch-up</b><small>1h 30</small></span><span class="bk-pr">$150</span></button>
+        <button class="bk-svc" data-svc="Lymphatic Face-Lifting Massage" data-price="$135" data-dur="45 min"><span><b>Lymphatic Face-Lifting Massage</b><small>45 min</small></span><span class="bk-pr">$135</span></button>
+      </div>
+    </div>
+    <div id="bkStep2" hidden>
+      <button class="bk-back" id="bkBack">← Change service</button>
+      <div class="bk-summary"><b id="bkSvcName"></b><span id="bkSvcMeta"></span> · <span class="bk-sp" id="bkSvcPrice"></span></div>
+      <p class="bk-sub">Choose a time</p>
+      <div class="bk-avail" id="bkAvail">
+        <span class="lbl">Real-time availability</span>
+        <div class="slots" aria-hidden="true"><span class="slot">Today</span><span class="slot">Tomorrow</span><span class="slot">This week</span></div>
+        <p class="note">Anna&rsquo;s live Booksy calendar connects right here on launch — clients pick a real open time and confirm without ever leaving the site.</p>
+      </div>
+      <a class="btn btn-gold bk-confirm" id="bkConfirm" href="https://booksy.com/en-us/167793_eyebrow-shapes_brows-lashes_103850_palmdale" rel="noopener" target="_blank">Continue &amp; confirm →</a>
+    </div>
+  </div>
+</aside>
+
 <div class="foil"></div>
 <footer><div class="wrap foot">
   <a class="bm" style="font-family:var(--ff-s);font-size:1.4rem;color:var(--gold-1)" href="#top">Brows by Anna</a>
@@ -274,11 +339,35 @@
 
 <script>
 (function(){
+  // scroll reveals
   var rmq=window.matchMedia('(prefers-reduced-motion: reduce)');
   var els=document.querySelectorAll('.rv:not(.in)');
-  if(rmq.matches||!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});return;}
-  var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.14});
-  els.forEach(function(e){io.observe(e)});
+  if(rmq.matches||!('IntersectionObserver'in window)){els.forEach(function(e){e.classList.add('in')});}
+  else{var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.14});els.forEach(function(e){io.observe(e)});}
+
+  // on-site booking drawer
+  var overlay=document.getElementById('bkOverlay'),drawer=document.getElementById('bkDrawer');
+  var s1=document.getElementById('bkStep1'),s2=document.getElementById('bkStep2'),lastFocus=null;
+  function back(){s2.hidden=true;s1.hidden=false;}
+  function open(){lastFocus=document.activeElement;overlay.hidden=false;drawer.hidden=false;back();
+    requestAnimationFrame(function(){overlay.classList.add('show');drawer.classList.add('show')});
+    document.body.style.overflow='hidden';document.getElementById('bkClose').focus();}
+  function close(){overlay.classList.remove('show');drawer.classList.remove('show');document.body.style.overflow='';
+    setTimeout(function(){overlay.hidden=true;drawer.hidden=true},420);if(lastFocus)lastFocus.focus();}
+  function pick(b){document.getElementById('bkSvcName').textContent=b.getAttribute('data-svc');
+    document.getElementById('bkSvcMeta').textContent=b.getAttribute('data-dur');
+    document.getElementById('bkSvcPrice').textContent=b.getAttribute('data-price');
+    s1.hidden=true;s2.hidden=false;drawer.scrollTop=0;}
+  document.querySelectorAll('.bk-svc').forEach(function(b){b.addEventListener('click',function(){pick(b)})});
+  document.getElementById('bkClose').addEventListener('click',close);
+  document.getElementById('bkBack').addEventListener('click',back);
+  overlay.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)close()});
+  // intercept Booksy links -> open the on-site drawer (no-JS users still reach Booksy directly)
+  document.querySelectorAll('a[href*="167793_eyebrow"]').forEach(function(a){
+    if(a.id==='bkConfirm')return; // final confirm step genuinely hands off to Booksy
+    a.addEventListener('click',function(e){e.preventDefault();open();});
+  });
 })();
 </script>
 </body>
